@@ -1,0 +1,22 @@
+
+/*
+This is a sample function. Uncomment to execute or make changes to this function.
+customerID = customer.get("contact_id");
+companyName = customer.get("company_name");
+organizationID = organization.get("organization_id");
+*/
+customerID = customer.get("contact_id");
+organizationID = organization.get("organization_id");
+contacts = zoho.books.getRecordsByID("Contacts",organizationID,customerID,"books_test");
+// Define your map data containing the information to be sent to Zoho CRM
+customer = contacts.get("contact");
+dataMap = {"data":{{"Last_Name":customer.get("last_name"),"First_Name":customer.get("first_name"),"Email":customer.get("email"),"Phone":customer.get("mobile")}}};
+info dataMap;
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/crm/v6/Contacts"
+	type :POST
+	parameters:dataMap.toString()
+	connection:"test"
+];
+info response;
