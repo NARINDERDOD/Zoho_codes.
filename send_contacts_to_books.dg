@@ -1,0 +1,27 @@
+Contacts = zoho.crm.getRecordById("Contacts",Contacts_id);
+info Contacts;
+billing_address = Map();
+billing_address.put("address",Contacts.get("Mailing_Street"));
+billing_address.put("city",Contacts.get("Mailing_City"));
+billing_address.put("street2",Contacts.get("Other_Street"));
+billing_address.put("state",Contacts.get("Mailing_State"));
+billing_address.put("zip",Contacts.get("Mailing_Zip"));
+billing_address.put("country",Contacts.get("Mailing_Country"));
+contact_persons = Map();
+contact_persons.put("email",Contacts.get("Email"));
+contactPersons = list();
+contactPersons.add(contact_persons);
+contacts_map = Map();
+contacts_map.put("contact_name",Contacts.get("First_Name") + " " + Contacts.get("Last_Name"));
+companyName = Contacts.get("Account_Name");
+contacts_map.put("company_name",companyName.get("name"));
+contacts_map.put("billing_address",billing_address);
+contacts_map.put("contact_persons",contactPersons);
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/books/v3/contacts?organization_id=841566379"
+	type :POST
+	parameters:contacts_map.toString()
+	connection:"testing"
+];
+info response;
