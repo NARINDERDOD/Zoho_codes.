@@ -1,0 +1,23 @@
+
+// fetch product record byu using module_id
+items = zoho.crm.getRecordById("Products",module_id);
+
+//put item details into map 
+item_map = Map();
+item_map.put("name",items.get("Product_Name"));
+item_map.put("rate",items.get("Unit_Price"));
+item_map.put("description",items.get("Summary"));
+item_map.put("sku",items.get("Product_Code"));
+info item_map;
+
+// firstlly create connection between zoho crm and zoho books my connection name is "connection:testing
+ // read api documentation of zoho books for post data and put your organization_id in the url
+
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/books/v3/items?organization_id=841566379"
+	type :POST
+	parameters:item_map.toString()
+	connection:"testing"
+];
+info response;
