@@ -1,0 +1,63 @@
+if(input.Customer_id != null)
+{
+	Customer_Id = input.Customer_id.removeAllAlpha();
+	newText1 = Customer_Id.remove("(");
+	newText2 = newText1.remove(")");
+	newText3 = newText2.remove("'");
+	trim_ = newText3.remove(",");
+	id = trim(trim_);
+	//	input.Description = id;
+}
+if(input.Items_id != null)
+{
+	item_id = input.Items_id.removeAllAlpha();
+	newText1 = item_id.remove("(");
+	newText2 = newText1.remove(")");
+	newText3 = newText2.remove("'");
+	trim_ = newText2.remove(",");
+	item_id = trim(trim_);
+	item_name = input.Items_id;
+	name = getAlpha(item_name);
+}
+
+// convert 01-feb-2024 to 2024-02-01 
+if(input.Invoice_Date !=null)
+{
+invoice_date = input.Invoice_Date;
+dateObject_to = toDate(invoice_date,"dd-MMM-yyyy");
+inv_date = dateObject_to.toString("yyyy-MM-dd");
+}
+
+   
+// convert 01-feb-2024 to 2024-02-01 
+if(input.Date_Due != null)
+{
+date_due = input.Date_Due;
+dateObjec_duet = toDate(date_due,"dd-MMM-yyyy");
+date_duee = dateObjec_duet.toString("yyyy-MM-dd");	
+}
+
+description = input.Description;
+quantity = input.Quantity;
+unit_price = input.Unit_Price;
+line_items = Map();
+line_items.put("item_id",item_id);
+line_items.put("name",name);
+line_items.put("description",description);
+line_items.put("rate",unit_price);
+line_items.put("quantity",quantity);
+List_item = List();
+List_item.add(line_items);
+invoice_map = Map();
+invoice_map.put("customer_id",id);
+invoice_map.put("date",inv_date);
+invoice_map.put("due_date",date_duee);
+invoice_map.put("line_items",List_item);
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/books/v3/invoices?organization_id=844837969"
+	type :POST
+	parameters:invoice_map.toString()
+	connection:"conn_books"
+];
+info response;
