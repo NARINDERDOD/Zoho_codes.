@@ -1,42 +1,32 @@
 if(input.Customer_id != null)
 {
 	Customer_Id = input.Customer_id.removeAllAlpha();
-	newText1 = Customer_Id.remove("(");
-	newText2 = newText1.remove(")");
-	newText3 = newText2.remove("'");
-	trim_ = newText3.remove(",");
-	id = trim(trim_);
-	//	input.Description = id;
+	id = Customer_Id.remove("(").remove(")").remove("'").remove(",").trim();
+	c_nsme = input.Customer_id;
+
 }
 if(input.Items_id != null)
 {
 	item_id = input.Items_id.removeAllAlpha();
-	newText1 = item_id.remove("(");
-	newText2 = newText1.remove(")");
-	newText3 = newText2.remove("'");
-	trim_ = newText2.remove(",");
-	item_id = trim(trim_);
+	item_id = item_id.remove("(").remove(")").remove("'").remove(",").trim();
 	item_name = input.Items_id;
 	name = getAlpha(item_name);
-}
 
+} 
 // convert 01-feb-2024 to 2024-02-01 
-if(input.Invoice_Date !=null)
+if(input.Invoice_Date != null)
 {
-invoice_date = input.Invoice_Date;
-dateObject_to = toDate(invoice_date,"dd-MMM-yyyy");
-inv_date = dateObject_to.toString("yyyy-MM-dd");
+	invoice_date = input.Invoice_Date;
+	dateObject_to = toDate(invoice_date,"dd-MMM-yyyy");
+	inv_date = dateObject_to.toString("yyyy-MM-dd");
 }
-
-   
 // convert 01-feb-2024 to 2024-02-01 
 if(input.Date_Due != null)
 {
-date_due = input.Date_Due;
-dateObjec_duet = toDate(date_due,"dd-MMM-yyyy");
-date_duee = dateObjec_duet.toString("yyyy-MM-dd");	
+	date_due = input.Date_Due;
+	dateObjec_duet = toDate(date_due,"dd-MMM-yyyy");
+	date_duee = dateObjec_duet.toString("yyyy-MM-dd");
 }
-
 description = input.Description;
 quantity = input.Quantity;
 unit_price = input.Unit_Price;
