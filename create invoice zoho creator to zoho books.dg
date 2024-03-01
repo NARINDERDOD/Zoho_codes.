@@ -16,8 +16,6 @@ if(input.Customer_id != null)
 }
 if(input.Items_id != null)
 {
-	// 	item_id = input.Items_id.removeAllAlpha();
-	// 	item_id = item_id.remove("(").remove(")").remove("'").remove(",").trim();
 	item_id = input.Items_id;
 	open_bracket_index = find(item_id,"(");
 	close_bracket_index = find(item_id,")");
@@ -32,7 +30,23 @@ if(input.Items_id != null)
 		info "No number within brackets found in the string.";
 	}
 	item_name = input.Items_id;
-	name = getAlpha(item_name);
+	// Find the index of the opening and closing brackets
+	open_bracket_index = indexOf(item_name,"(");
+	close_bracket_index = indexOf(item_name,")");
+	// Check if both opening and closing brackets are found
+	if(open_bracket_index != -1 && close_bracket_index != -1)
+	{
+		// Extract the substring outside the brackets
+		string_outside_brackets = left(item_name,open_bracket_index) + right(item_name,len(item_name) - close_bracket_index - 1);
+		name = string_outside_brackets;
+	//	input.Description = name;
+		// Output the extracted string
+		info "String outside brackets: " + string_outside_brackets;
+	}
+	else
+	{
+		info "No brackets found in the string.";
+	}
 }
 // convert 01-feb-2024 to 2024-02-01 
 if(input.Invoice_Date != null)
