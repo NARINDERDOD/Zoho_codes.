@@ -1,18 +1,39 @@
 if(input.Customer_id != null)
 {
-	Customer_Id = input.Customer_id.removeAllAlpha();
-	id = Customer_Id.remove("(").remove(")").remove("'").remove(",").trim();
-	c_nsme = input.Customer_id;
-
+	Customer_Id = input.Customer_id;
+	open_bracket_index = find(Customer_Id,"(");
+	close_bracket_index = find(Customer_Id,")");
+	if(open_bracket_index >= 0 && close_bracket_index >= 0)
+	{
+		number_within_brackets = Customer_Id.subString(open_bracket_index + 1,close_bracket_index);
+		id = number_within_brackets;
+		input.Description = id;
+	}
+	else
+	{
+		info "No number within brackets found in the string.";
+	}
 }
 if(input.Items_id != null)
 {
-	item_id = input.Items_id.removeAllAlpha();
-	item_id = item_id.remove("(").remove(")").remove("'").remove(",").trim();
+	// 	item_id = input.Items_id.removeAllAlpha();
+	// 	item_id = item_id.remove("(").remove(")").remove("'").remove(",").trim();
+	item_id = input.Items_id;
+	open_bracket_index = find(item_id,"(");
+	close_bracket_index = find(item_id,")");
+	if(open_bracket_index >= 0 && close_bracket_index >= 0)
+	{
+		number_within_brackets = item_id.subString(open_bracket_index + 1,close_bracket_index);
+		item_id = number_within_brackets;
+		input.Description = id;
+	}
+	else
+	{
+		info "No number within brackets found in the string.";
+	}
 	item_name = input.Items_id;
 	name = getAlpha(item_name);
-
-} 
+}
 // convert 01-feb-2024 to 2024-02-01 
 if(input.Invoice_Date != null)
 {
