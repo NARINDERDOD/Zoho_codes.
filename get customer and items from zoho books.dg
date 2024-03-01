@@ -1,0 +1,30 @@
+
+// get item from zoho books
+response = invokeurl
+[
+	url :"https://www.zohoapis.com/books/v3/items/?organization_id=844837969"
+	type :GET
+	connection:"conn_books"
+];
+info response;
+item_response = response.get("items").toJSONList();
+itemList = List();
+for each  workshop in item_response
+{
+	input.Items_id:ui.add(workshop.getJSON("name") + " (" + workshop.getJSON("item_id") + ") ");
+}
+
+// get customer from zoho books
+response_c = invokeurl
+[
+	url :"https://www.zohoapis.com/books/v3/contacts?organization_id=844837969"
+	type :GET
+	connection:"conn_books"
+];
+info response_c;
+contact_response = response_c.get("contacts").toJSONList();
+cont_list = List();
+for each  con in contact_response
+{
+	input.Customer_id:ui.add(con.getJSON("contact_name") + " (" + con.getJSON("contact_id") + ") ");
+}
