@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .form-group {
+        margin: 0 auto 20px; /* Center the form fields horizontally */
+        text-align: center; /* Center-align the labels */
+    }
+    .form-group label {
+        display: inline-block; /* Make labels inline */
+        width: 100px; /* Set width for labels */
+        text-align: left; /* Right-align labels */
+        margin-right: 20px; /* Add some space between labels and input fields */
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"] {
+        width: calc(80% - 50px);  /* To account for both left and right margins */
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 0 auto 20px;
+    }
+    #updateButton {
+        margin-right: 20px;
+        margin-top: -10px; /* Add margin-left to the button */
+        background-color: #019AF6; /* Green background color */
+        border: none;
+        color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right; /* Align button to the right */
+
+    }
+    #updateButton:hover {
+        background-color: #4565a0; /* Darker green when hovering */
+    }
+      /* Align button to the right */
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+   
+</style>
+</head>
+<body>
+
+
+<form id="updateLeadForm" action="#" method="post">
+    <div class="form-group">
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company">
+    </div>
+    <div class="form-group">
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" name="first-name">
+    </div>
+    <div class="form-group">
+        <label for="last-name">Last Name:</label>
+        <input type="text" id="last-name" name="last-name">
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+    </div>
+    <div class="form-group">
+        <label for="website">Website:</label>
+        <input type="text" id="website" name="website">
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone">
+    </div>
+    <button type="button" id="updateButton">Update</button>
+
+</form>
+
+<script>
+
+      // Subscribe to the EmbeddedApp onPageLoad event before initializing 
+      ZOHO.embeddedApp.on("PageLoad", function(data) {
+        var recordId = data.EntityId[0]; // Assign value to the recordId variable
+        console.log("on page Loaded:", recordId);
+
+
+        ZOHO.CRM.UI.Resize({width:0,height:500});// this code resize the  Widgets 
+        getData(recordId);
+        updateData(recordId);
+    })
+
+      // Initialize the Zoho Embedded App
+      ZOHO.embeddedApp.init();
+
+
+
+    // Define the getData function
+    function getData(record_ID) {
+        console.log("Fetching data for recordID:", record_ID);
+
+        ZOHO.CRM.API.getRecord({ Entity: "Leads", RecordID: record_ID })
+            .then(function(response) {
+                var leadData = response.data[0];
+
+                // Populate form fields with Zoho CRM data
+                document.getElementById('company').value = leadData.Company;
+                document.getElementById('first-name').value = leadData.First_Name;
+                document.getElementById('last-name').value = leadData.Last_Name;
+                document.getElementById('email').value = leadData.Email;
+                document.getElementById('website').value = leadData.Website;
+                document.getElementById('phone').value = leadData.Phone;
+
+                console.log(leadData);
+            })
+            .catch(function(error) {
+                console.error("Error fetching data:", error);
+            });
+    };
+
+    function updateData(record_ID) {
+
+        // Add event listener for the "Update" button
+document.getElementById('updateButton').addEventListener('click', function() {
+        // Get updated values from the form
+        var updatedFirstName = document.querySelector('input[name="first-name"]').value;
+		var updatedLastName = document.querySelector('input[name="last-name"]').value;
+        var updatedPhone = document.querySelector('input[name="phone"]').value;
+        var updatedEmail = document.querySelector('input[name="email"]').value;
+        var updatedCompany = document.querySelector('input[name="company"]').value;
+        var website = document.querySelector('input[name="website"]').value;
+
+
+        // Update the lead's information in Zoho CRM
+        ZOHO.CRM.API.updateRecord({
+            Entity: "Leads",
+            RecordID: record_ID,
+            APIData: {
+                id: record_ID, 
+                First_Name: updatedFirstName,
+				Last_Name: updatedLastName,
+                Phone: updatedPhone,
+                Email: updatedEmail,
+                Company: updatedCompany,
+                Website:website 
+                // Add more fields to update as needed
+            }
+        })
+        .then(function(updateResponse) {
+            console.log("Record updated successfully:", updateResponse);
+			showUpdateMessage("Updated successfully");
+
+            // Optionally, you can add code here to display a success message or perform additional actions.
+
+        })
+        .catch(function(updateError) {
+            console.error("Error updating record:", updateError);
+
+            if (updateError.data && updateError.data[0] && updateError.data[0].code && updateError.data[0].details) {
+                console.error("Zoho CRM Error Code:", updateError.data[0].code);
+                console.error("Zoho CRM Error Details:", updateError.data[0].details);
+            }
+
+            // Optionally, you can add code here to display an error message or perform additional error-handling actions.
+        });
+        ZOHO.CRM.UI.Popup.close() ;
+
+    });            
+
+    }
+  
+
+
+  
+</script>
+
+</body>
+</html>
