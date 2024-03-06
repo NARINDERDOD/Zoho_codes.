@@ -1,0 +1,73 @@
+// Define the module, record ID and WorkDrive Folder ID
+moduleName = "Deals";
+// Replace xxxxxxxxxxxxxxxxx for the actual Record ID
+// Replace yyyyyyyyyyyyyyyy for the actual WorkDrive Folder ID
+workdrive_folder_id = "qkzkr19fba7fdd0c8481790cc2ad2022ae9a8";
+// Retrieve related attachments
+relatedAttachments = zoho.crm.getRelatedRecords("Attachments",moduleName,record_id);
+info relatedAttachments;
+// Initialize lists for File Attachment IDs and Link URLs
+FileAttchIds = List();
+LinkUrls = list();
+// Check if there are related attachments
+if(relatedAttachments.size() > 0)
+{
+	for each  rec in relatedAttachments
+	{
+		// Extract the Attachment ID
+		attachmentId = rec.get("id");
+		// Determine the type and categorize accordingly
+		if(rec.get("$type") == "Attachment")
+		{
+			FileAttchIds.add(attachmentId);
+		}
+		else if(rec.get("$type") == "Link URL")
+		{
+			LinkUrls.add(rec.get("$link_url"));
+		}
+	}
+	// Process each File Attachment ID
+	for each  AttachID in FileAttchIds
+	{
+		// Download the file attachment
+		downloadFile = invokeurl
+		[
+			url :"https://www.zohoapis.com/crm/v2/" + moduleName + "/" + record_id + "/Attachments/" + AttachID
+			type :GET
+			connection:"crm_cn"
+		];
+		// Upload file to workdrive
+		uploadFile = zoho.workdrive.uploadFile(downloadFile,workdrive_folder_id,downloadFile.getFileName(),FALSE,"crm_connection");
+		// Extract file permalink
+		filePermaLink = uploadFile.get("data").get(0).get("attributes").get("Permalink");
+		// Prepare and send attachment link
+		paramMap = Map();
+		paramMap.put("attachmentUrl",filePermaLink);
+		paramMap.put("title",downloadFile.getFileName());
+		attachLink = invokeurl
+		[
+			url :"https://www.zohoapis.com/crm/v6/" + moduleName + "/" + record_id + "/Attachments"
+			type :POST
+			parameters:paramMap
+			connection:"crm_connection"
+			content-type:"multipart/form-data"
+		];
+		// Attempt to delete the original attachment after successful upload
+		try 
+		{
+			if(attachLink.get("data").get(0).get("code") == "SUCCESS")
+			{
+				deleteAttachment = invokeurl
+				[
+					url :"https://www.zohoapis.com/crm/v6/" + moduleName + "/" + record_id + "/Attachments/" + AttachID
+					type :DELETE
+					connection:"crm_connection"
+				];
+			}
+		}
+		catch (e)
+		{
+			info e;
+		}
+	}
+}
