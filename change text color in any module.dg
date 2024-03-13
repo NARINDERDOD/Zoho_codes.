@@ -1,0 +1,11 @@
+
+var companyField = ZDK.Page.getField("Company").addStyle({
+    foregroundColor: '#ba258f', // Change to your desired color
+    fontWeight: 'bold', // Change to 'normal' if you want to remove bold
+    fontStyle: 'oblique' // Add font style here
+
+
+    
+});
+
+
