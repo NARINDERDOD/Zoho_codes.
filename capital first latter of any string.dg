@@ -4,19 +4,50 @@ Student_Last_Name = child_record.get("Student_Last_Name");
 Guardian_First_Name = child_record.get("First_Name");
 Guardian_Last_Name = child_record.get("Last_Name");
 // this condition for student's first name 
-firstString_s_f_n = Student_First_Name.subString(0,1);
-firstStringUpper_s_f_n = Student_First_Name.subString(0,1).upper();
-S_first_name = replaceFirst(Student_First_Name,firstString_s_f_n,firstStringUpper_s_f_n);
-firstString_s_l_n = Student_Last_Name.subString(0,1);
-firstStringUpper_s_l_n = Student_Last_Name.subString(0,1).upper();
-S_last_name = replaceFirst(Student_Last_Name,firstString_s_l_n,firstStringUpper_s_l_n);
-firstString_g_f_n = Guardian_First_Name.subString(0,1);
-firstStringUpper_g_f_n = Guardian_First_Name.subString(0,1).upper();
-G_first_name = replaceFirst(Guardian_First_Name,firstString_g_f_n,firstStringUpper_g_f_n);
-firstString_g_l_n = Guardian_Last_Name.subString(0,1);
-firstStringUpper_g_l_n = Guardian_Last_Name.subString(0,1).upper();
-G_last_name = replaceFirst(Guardian_Last_Name,firstString_g_l_n,firstStringUpper_g_l_n);
+if(Student_First_Name != null )
+{
+	firstString_s_f_n = Student_First_Name.subString(0,1);
+	firstStringUpper_s_f_n = Student_First_Name.subString(0,1).upper();
+	S_first_name = replaceFirst(Student_First_Name,firstString_s_f_n,firstStringUpper_s_f_n);
+}
+else
+{
+	info " s First name is null";
+}
+if(Student_Last_Name != null)
+{
+	firstString_s_l_n = Student_Last_Name.subString(0,1);
+	firstStringUpper_s_l_n = Student_Last_Name.subString(0,1).upper();
+	S_last_name = replaceFirst(Student_Last_Name,firstString_s_l_n,firstStringUpper_s_l_n);
+}
+else
+{
+	info " s last name is null";
+}
+if(Guardian_First_Name != null)
+{
+	firstString_g_f_n = Guardian_First_Name.subString(0,1);
+	firstStringUpper_g_f_n = Guardian_First_Name.subString(0,1).upper();
+	G_first_name = replaceFirst(Guardian_First_Name,firstString_g_f_n,firstStringUpper_g_f_n);
+}
+else
+{
+	info " G first name is null";
+}
+if(Guardian_Last_Name != null)
+{
+	firstString_g_l_n = Guardian_Last_Name.subString(0,1);
+	firstStringUpper_g_l_n = Guardian_Last_Name.subString(0,1).upper();
+	G_last_name = replaceFirst(Guardian_Last_Name,firstString_g_l_n,firstStringUpper_g_l_n);
+}
+else
+{
+	info " G last name is null";
+}
 leadinfo = {"Student_First_Name":S_first_name,"Student_Last_Name":S_last_name,"First_Name":G_first_name,"Last_Name":G_last_name};
-info zoho.crm.updateRecord("Child_Details",record_id,leadinfo);
-info S_first_name;
-info G_last_name;
+if(leadinfo != null)
+{
+	info zoho.crm.updateRecord("Child_Details",record_id,leadinfo);
+	info S_first_name;
+	info G_last_name;
+}
