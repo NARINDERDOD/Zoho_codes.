@@ -1,0 +1,29 @@
+estimate_details = zoho.crm.getRecordById("Quotes",Id);
+//quotesStatus = estimate_details.get("")
+product = estimate_details.get("Product_Details").getJSON("product");
+quantity = estimate_details.get("Product_Details").getJSON("quantity");
+Discount = estimate_details.get("Product_Details").getJSON("Discount");
+subject_type = estimate_details.getJSON("Subject");
+unit_price = estimate_details.get("Product_Details").getJSON("unit_price");
+Product_ID = product.getJSON("id");
+quotes_Status = estimate_details.getJSON("Quote_Stage");
+info subject_type;
+Account_Name = estimate_details.get("Account_Name").getJSON("name");
+Account_ID = estimate_details.get("Account_Name").getJSON("id");
+infoData = {"data":{{"Account_Name":{"id":Account_ID},"Subject":subject_type,"Product_Details":{{"product":{"id":Product_ID},"quantity":quantity,"Discount":Discount,"Unit Price":unit_price}}}}};
+info infoData;
+if(quotes_Status == "Confirmed")
+{
+	response = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v2/Sales_Orders"
+		type :POST
+		parameters:infoData.toString()
+		connection:"conn_crm"
+	];
+	return response;
+}
+else
+{
+	return "Quote Stage is not Confirmed yet, Firstly Confirm Quote Stage  ";
+}
