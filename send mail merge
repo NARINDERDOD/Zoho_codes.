@@ -1,0 +1,72 @@
+void automation.send_mail_merge(Int id)
+{
+project_data = zoho.crm.getRecordById("CustomModule5",id);
+info project_data;
+brand = project_data.get("field32");
+documentid = "";
+if(brand.equals("BULTHAUP"))
+{
+	info "brand = " + brand;
+	documentid = "mimvzec3e299398314802922c133967d8e5ba";
+}
+else if(brand.equals("BOFFI"))
+{
+	info "brand = " + brand;
+	documentid = "mimvz5a0e456283df4025999515bd29f639de";
+}
+else if(brand.equals("Arclinea"))
+{
+	info "brand = " + brand;
+	documentid = "mimvzd34931ab1db44d5b81bfad8dfcf9000b";
+}
+contact_id = project_data.get("field52").get("id");
+contact_data = zoho.crm.getRecordById("Contacts",contact_id);
+info contact_data;
+Email = contact_data.get("Email");
+Full_Name = contact_data.get("Full_Name");
+info Email;
+if(Email == null)
+{
+	Email = project_data.get("field74");
+	info Email;
+}
+output_settings = Map();
+output_settings.put("format","pdf");
+params = Map();
+params.put("record_id",id);
+params.put("output_settings",output_settings);
+params.put("response_type","link");
+params.put("filename",brand);
+url = "https://www.zohoapis.com/writer/api/v1/documents/" + documentid + "/merge";
+resp = invokeurl
+[
+	url :url
+	type :POST
+	parameters:params
+	connection:"writer_oauth_connection"
+];
+info resp;
+download_url = resp.get("URL");
+// from your merge response
+filedata = invokeurl
+[
+	url :download_url
+	type :GET
+	connection:"writer_oauth_connection"
+];
+info filedata;
+// Subject & message for an attached document (no link)
+subject = "Your document is attached";
+message = "Hi " + ifnull(Full_Name,"there") + ",<br><br>" + "Please find the requested document attached.<br><br>" + "Regards,<br>" + zoho.loginuser;
+sendmail
+[
+	from :zoho.adminuserid
+	to :Email
+	subject :subject
+	message :message
+	Attachments :file:filedata
+]
+attachment_response = zoho.crm.attachFile("CustomModule5",id,filedata,"crmacceess");
+// Log the response
+info attachment_response;
+}
