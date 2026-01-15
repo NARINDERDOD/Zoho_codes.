@@ -1,0 +1,78 @@
+void automation.Create_projects(Int deals_id)
+{
+portalId = "881924165";
+Deals_Data = zoho.crm.getRecordById("Deals",deals_id);
+info Deals_Data;
+Stage = Deals_Data.get("Stage");
+info Stage;
+relared_quotes = zoho.crm.getRelatedRecords("Quotes","Deals",deals_id);
+info relared_quotes;
+for each  quotes in relared_quotes
+{
+	Quote_Stage = quotes.get("Quote_Stage");
+	info Quote_Stage;
+	quote_id = quotes.get("id");
+	info quote_id;
+	quote_data = zoho.crm.getRecordById("Quotes",quote_id);
+	info quote_data;
+	if(Quote_Stage == "Closed Won")
+	{
+		Product_Details = quote_data.get("Product_Details");
+		info Product_Details;
+		for each  product in Product_Details
+		{
+			info product;
+			product_name = product.get("product").get("name");
+			info product_name;
+			prodect_id = product.get("product").get("id");
+			info prodect_id;
+			product_description = product.get("product_description");
+			// Create task body
+			product_data = zoho.crm.getRecordById("Products",prodect_id);
+			//	info product_data ;
+			Project_Template_ID = product_data.get("Project_Template_ID");
+			info "Project_Template_ID " + Project_Template_ID;
+			if(product_description == null && product_description == "")
+			{
+				product_description = product_data.get("Description");
+			}
+			params = Map();
+			params.put("name",product_name);
+			params.put("description",product_description);
+			params.put("copy_from",Project_Template_ID);
+			deals_map = Map();
+			deals_map.put("record_id",deals_id);
+			params.put("deals",deals_map);
+			//params.put("layout", map_id);
+			// Make API Call
+			response = invokeurl
+			[
+				url :"https://projectsapi.zoho.com/api/v3/portal/" + portalId + "/projects"
+				type :POST
+				parameters:params.toString()
+				connection:"zoho_project"
+			];
+			info response;
+			project_id = response.getJSON("id");
+			info project_id;
+
+// add created product in the related list 
+			mp = Map();
+			mp.put("name",product_name);
+			datalist = List();
+			datalist.add(mp);
+			datamp = Map();
+			datamp.put("data",datalist);
+			info datamp;
+			resp2 = invokeurl
+			[
+				url :"https://www.zohoapis.com/crm/v8/Deals/" + deals_id + "/Zoho_Projects/" + project_id
+				type :POST
+				parameters:datamp.toString()
+				connection:"crm_forcodeblue"
+			];
+			info resp2;
+		}
+	}
+}
+}
